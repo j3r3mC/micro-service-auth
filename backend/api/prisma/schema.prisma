@@ -12,9 +12,73 @@ datasource db {
   provider = "postgresql"
 }
 
+// Enum Rôles -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
+
+enum Role {
+  PARENT
+  CHILD
+  GUEST
+}
+
+// Enum Avatars -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
+
+enum WingStyle {
+  ROUND_SMALL
+  FEATHER_LIGHT
+  LONG_GRACEFUL
+}
+
+enum HairStyle {
+  BLOND_SOFT
+  BROWN_SOFT
+  WHITE_ANGELIC
+}
+
+
+enum HaloStyle {
+  HALO_SIMPLE
+  HALO_GLOW
+  HALO_STARRY
+}
+
+enum RobeStyle {
+  ROBE_WHITE
+  ROBE_PASTEL_BLUE
+  ROBE_PASTEL_GOLD
+}
+
+enum Accessory {
+  STAR_SMALL
+  HEART_SMALL
+  CROSS_SOFT
+}
+
+enum Expression {
+  SMILE_SOFT
+}
+
+// Models -_-_-_-_-_-_-_-_-_-_-_-_-_-_
+
 model User {
   id        Int      @id @default(autoincrement())
-  email     String   @unique
-  password  String
+  role      Role
+  email     String?   
+  password  String?
+  pin       String? 
+  isGuest   Boolean @default(false)
+  parentId  Int?
+  parent   User?  @relation("ParentChildren", fields: [parentId], references: [id])
+  children User[] @relation("ParentChildren")
+
+  hairStyle   HairStyle   @default(BLOND_SOFT)
+  wingStyle   WingStyle   @default(ROUND_SMALL)
+  haloStyle   HaloStyle   @default(HALO_SIMPLE)
+  robeStyle   RobeStyle   @default(ROBE_WHITE)
+  accessory   Accessory   @default(STAR_SMALL)
+  expression  Expression  @default(SMILE_SOFT)
+
+  
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
 }
